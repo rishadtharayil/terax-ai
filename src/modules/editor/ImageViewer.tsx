@@ -57,6 +57,18 @@ export function ImageViewer({ path, size }: Props) {
   const handleMouseUp = () => setIsDragging(false);
   const handleMouseLeave = () => setIsDragging(false);
 
+  const handleWheel = (e: React.WheelEvent<HTMLDivElement>) => {
+    // e.deltaY < 0 means scroll up (zoom in), e.deltaY > 0 means scroll down (zoom out)
+    const zoomStep = 0.1;
+    setScale((s) => {
+      if (e.deltaY < 0) {
+        return Math.min(5, s + zoomStep);
+      } else {
+        return Math.max(0.25, s - zoomStep);
+      }
+    });
+  };
+
   const filename = getFilename(path);
   const src = convertFileSrc(path);
 
@@ -69,6 +81,7 @@ export function ImageViewer({ path, size }: Props) {
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
           onMouseLeave={handleMouseLeave}
+          onWheel={handleWheel}
           className="relative h-full w-full flex items-center justify-center bg-neutral-100 dark:bg-neutral-900 cursor-grab active:cursor-grabbing"
           style={{
             backgroundImage: "conic-gradient(rgba(128,128,128,0.08) 25%, transparent 0 50%, rgba(128,128,128,0.08) 0 75%, transparent 0)",
