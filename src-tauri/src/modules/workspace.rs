@@ -749,13 +749,7 @@ mod auth_tests {
         #[cfg(unix)]
         std::os::unix::fs::symlink(&outside, &link).expect("symlink");
         #[cfg(windows)]
-        if let Err(e) = std::os::windows::fs::symlink_dir(&outside, &link) {
-            if e.raw_os_error() == Some(1314) {
-                eprintln!("Skipping symlink test: missing Windows Developer Mode/Admin privilege.");
-                return;
-            }
-            panic!("symlink failed: {e}");
-        }
+        std::os::windows::fs::symlink_dir(&outside, &link).expect("symlink");
         let reg = WorkspaceRegistry::default();
         reg.authorize(&allowed).expect("authorize root");
         let s = link.to_string_lossy().into_owned();
